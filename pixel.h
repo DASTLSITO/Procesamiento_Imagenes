@@ -19,7 +19,7 @@ public:
     int y;
 
     // Methods
-    pixel copy();
+    pixel* copy();
 
 
 
