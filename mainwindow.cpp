@@ -31,6 +31,24 @@ QImage* MatToQImage(Mat& mat) {
     return new QImage();
 }
 
+Image MatToImage(Mat imageMat){
+    int columns = imageMat.cols;
+    int rows = imageMat.rows;
+    Pixel** pixels = new Pixel*[columns];
+    for(int i = 0; i < columns; i++){
+        pixels[i] = new Pixel[rows];
+        for(int j = 0; j < rows; j++){
+            pixels[i][j] = Pixel(imageMat.at<uint8_t>(j, i), i, j);
+            //cout<<pixels[i][j].x<<"\t"<<pixels[i][j].y<<"\t"<<static_cast<int>(pixels[i][j].value)<<endl;
+        }
+    }
+    return Image(columns, rows, pixels);
+}
+
+Mat GetReverseImage(Mat originalImage){
+    
+}
+
 void MainWindow::on_actionSelect_image_triggered()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
@@ -42,17 +60,7 @@ void MainWindow::on_actionSelect_image_triggered()
     }
 
     imageMat = imread(fileName.toStdString(), IMREAD_GRAYSCALE);
-    int columns = imageMat.cols;
-    int rows = imageMat.rows;
-    Pixel** pixels = new Pixel*[columns];
-    for(int i = 0; i < columns; i++){
-        pixels[i] = new Pixel[rows];
-        for(int j = 0; j < rows; j++){
-            pixels[i][j] = Pixel(imageMat.at<uint8_t>(j, i), i, j);
-            //cout<<pixels[i][j].x<<"\t"<<pixels[i][j].y<<"\t"<<static_cast<int>(pixels[i][j].value)<<endl;
-        }
-    }
-    image = Image(columns, rows, pixels);
+    Image image = MatToImage(imageMat);
     QImage* qImage = MatToQImage(imageMat);
     Dialog* imageWindow = new Dialog(this, qImage);
     imageWindow->show();
