@@ -3,9 +3,11 @@
 
 #include <QMainWindow>
 #include <opencv2/opencv.hpp>
-#include "image.h"
+#include "Image.h"
 #include <QFileDialog>
 #include <QString>
+#include <iostream>
+#include "dialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

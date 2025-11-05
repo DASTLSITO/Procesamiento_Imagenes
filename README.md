@@ -11,7 +11,7 @@ Proyecto multiplataforma para procesamiento de imágenes usando Qt y OpenCV.
 - **Compilador C++17** - g++, clang, o MSVC
 - **OpenCV 4.5+** - Biblioteca de visión por computadora
 
----
+---96+*-
 
 ## 🛠 Instalación de Dependencias
 

@@ -3,15 +3,15 @@
 
 #include "cstdint"
 
-class pixel
+class Pixel
 {
 public:
     // Constructors
-    pixel();
-    pixel(uint8_t, int, int);
+    Pixel();
+    Pixel(uint8_t, int, int);
 
     // Destructors
-    ~pixel();
+    ~Pixel();
 
     // Attributes
     uint8_t value;
@@ -19,7 +19,7 @@ public:
     int y;
 
     // Methods
-    pixel* copy();
+    Pixel* copy();
 
 
 
