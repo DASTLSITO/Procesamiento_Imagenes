@@ -82,7 +82,7 @@ Mat GetMirror90DImage(Mat& originalMat){
     Mat matCopy = Mat(originalMat.cols, originalMat.rows, originalMat.type());
     for(int i = 0; i < matCopy.rows; i++){
         for(int j = 0; j < matCopy.cols; j++){
-            matCopy.at<uint8_t>(i, j) = originalMat.at<uint8_t>(j, i);
+            matCopy.at<uint8_t>(i, j) = originalMat.at<uint8_t>(matCopy.cols - j - 1, i);
         }
     }
     return matCopy;
@@ -112,8 +112,8 @@ void MainWindow::on_actionSelect_image_triggered()
     imageWindowInverse->show();
     Dialog* imageWindowMirror = new Dialog(this, matMirror, "Imagen Espejo");
     imageWindowMirror->show();
-    //Dialog* imageWindowMirror90D = new Dialog(this, mat90DImage, "Imagen Espejo 90 Grados");
-    //imageWindowMirror90D->show();
+    Dialog* imageWindowMirror90D = new Dialog(this, mat90DImage, "Imagen Espejo 90 Grados");
+    imageWindowMirror90D->show();
     Dialog* imageWindowBinary = new Dialog(this, matBinary, "Imagen Binaria");
     imageWindowBinary->show();
     Dialog* imageWindowMinValue = new Dialog(this, matMinValue, "Imagen minimo valor");
