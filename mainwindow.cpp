@@ -19,19 +19,8 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-QImage* MatToQImage(Mat& mat) {
-    if (mat.type() == CV_8UC3) { // RGB image
-        QImage* qImage = new QImage(mat.data, mat.cols, mat.rows, static_cast<int>(mat.step), QImage::Format_RGB888);
-        qImage->rgbSwap();
-        return qImage;
-    } else if (mat.type() == CV_8UC1) { // Grayscale image
-        return new QImage(mat.data, mat.cols, mat.rows, static_cast<int>(mat.step), QImage::Format_Grayscale8);
-    }
-    // Handle other formats if needed, or return a null QImage
-    return new QImage();
-}
 
-Image MatToImage(Mat imageMat){
+Image* MatToImage(Mat& imageMat){
     int columns = imageMat.cols;
     int rows = imageMat.rows;
     Pixel** pixels = new Pixel*[columns];
@@ -42,28 +31,38 @@ Image MatToImage(Mat imageMat){
             //cout<<pixels[i][j].x<<"\t"<<pixels[i][j].y<<"\t"<<static_cast<int>(pixels[i][j].value)<<endl;
         }
     }
-    return Image(columns, rows, pixels);
+    return new Image(columns, rows, pixels);
 }
 
-Mat GetReverseImage(Mat originalImage){
-    
+Mat GetInverseImage(Mat& originalImage){
+    Mat imageCopy = originalImage.clone();
+    for(int i = 0; i < imageCopy.rows; i++){
+        for(int j = 0; j < imageCopy.cols; j++){
+            imageCopy.at<uint8_t>(i, j) = 255 - imageCopy.at<uint8_t>(i, j);
+        }
+    }
+    return imageCopy;
 }
 
 void MainWindow::on_actionSelect_image_triggered()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
                                                     tr("Open Image"),
-                                                    QDir::homePath(),
+                                                    QDir::currentPath().replace("build/Desktop-Debug/bin", ""),
                                                     tr("Image Files (*.bmp)"));
     if (fileName.isEmpty()) {
         return;
     }
 
     imageMat = imread(fileName.toStdString(), IMREAD_GRAYSCALE);
-    Image image = MatToImage(imageMat);
-    QImage* qImage = MatToQImage(imageMat);
-    Dialog* imageWindow = new Dialog(this, qImage);
+    //Image* image = MatToImage(imageMat);
+
+    Mat imageInverse = GetInverseImage(imageMat);
+    Dialog* imageWindow = new Dialog(this, imageMat, "Imagen Original");
     imageWindow->show();
+    Dialog* imageWindowInverse = new Dialog(this, imageInverse, "Imagen Inversa");
+    imageWindowInverse->show();
+
 
 }
 
