@@ -14,10 +14,11 @@ class Dialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit Dialog(QWidget *parent = nullptr, const Mat& = Mat(), const QString& = "Dialog");
+    explicit Dialog(QWidget *parent = nullptr, const Mat& mat = Mat(), const QString& = "Dialog");
     ~Dialog();
-
-    QImage* MatToQImage(const Mat&);
+    Mat mat;
+    QImage* qImage;
+    void MatToQImage(Mat&);
 
 private:
     Ui::Dialog *ui;

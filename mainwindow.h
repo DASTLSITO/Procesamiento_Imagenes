@@ -8,6 +8,7 @@
 #include <QString>
 #include <iostream>
 #include "dialog.h"
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -25,6 +26,8 @@ public:
 
 private slots:
     void on_actionSelect_image_triggered();
+
+    void on_horizontalSlider_valueChanged(int value);
 
 private:
     Ui::MainWindow *ui;

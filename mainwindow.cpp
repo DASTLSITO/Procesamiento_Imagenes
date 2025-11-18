@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-
 using namespace std;
 using namespace cv;
 
@@ -12,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
 }
 
 MainWindow::~MainWindow()
@@ -45,6 +45,16 @@ Mat GetInverseImage(Mat& originalMat){
 }
 
 Mat GetBinaryImage(Mat& originalMat, uint8_t threshold = 125){
+    Mat matCopy = originalMat.clone();
+    for(int i = 0; i < matCopy.rows; i++){
+        for(int j = 0; j < matCopy.cols; j++){
+            matCopy.at<uint8_t>(i, j) = originalMat.at<uint8_t>(i, j) < threshold ? 0 : 255;
+        }
+    }
+    return matCopy;
+}
+
+Mat GetBinaryImageSlider(Mat& originalMat, uint8_t threshold = 125){
     Mat matCopy = originalMat.clone();
     for(int i = 0; i < matCopy.rows; i++){
         for(int j = 0; j < matCopy.cols; j++){
@@ -88,6 +98,11 @@ Mat GetMirror90DImage(Mat& originalMat){
     return matCopy;
 }
 
+void ChangeValueLabelForHorizontalSlider(int value, QLabel* label){
+    string text = "Valor:" + to_string(value);
+    label->setText(QString::fromStdString(text));
+}
+
 void MainWindow::on_actionSelect_image_triggered()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
@@ -104,9 +119,9 @@ void MainWindow::on_actionSelect_image_triggered()
     Mat matInverse = GetInverseImage(matOriginal);
     Mat matMirror = GetMirrorImage(matOriginal);
     Mat mat90DImage = GetMirror90DImage(matOriginal);
-    Mat matBinary = GetBinaryImage(matOriginal, 80);
+    Mat matBinary = GetBinaryImage(matOriginal, ui->horizontalSlider->value());
     Mat matMinValue = GetMinimumValueImage(matOriginal, matBinary);
-    Dialog* imageWindow = new Dialog(this, matOriginal, "Imagen Original");
+    Dialog* imageWindow = new Dialog(nullptr, matOriginal, "Imagen Original");
     imageWindow->show();
     Dialog* imageWindowInverse = new Dialog(this, matInverse, "Imagen Inversa");
     imageWindowInverse->show();
@@ -120,4 +135,18 @@ void MainWindow::on_actionSelect_image_triggered()
     imageWindowMinValue->show();
 }
 
+
+
+void MainWindow::on_horizontalSlider_valueChanged(int value)
+{
+    QLabel* qlabel = ui->centralwidget->findChild<QLabel*>("label");
+    ChangeValueLabelForHorizontalSlider(value, qlabel);
+    Dialog* imageWindowMinValue = this->findChild<Dialog*>("Imagen Binaria");
+    if(imageWindowMinValue == nullptr) return;
+    Mat& mat = imageWindowMinValue->mat;
+    mat = GetBinaryImageSlider(matOriginal, value);
+    imageWindowMinValue->MatToQImage(mat);
+    imageWindowMinValue->update();
+    imageWindowMinValue->activateWindow();
+}
 
